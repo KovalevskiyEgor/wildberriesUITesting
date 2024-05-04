@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite1">
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg" />
+    </listeners>
+
+    <test name="test1">
+        <parameter name="mainCategory" value="Дом" />
+        <parameter name="category" value="Спальня" />
+        <parameter name="subCategory" value="Зеркала" />
+        <parameter name="sortBy" value="Убыванию цены" />
+        <parameter name="minPrice" value="40" />
+        <parameter name="maxPrice" value="150" />
+        <parameter name="productName" value="Медведь" />
+        <classes>
+            <class name="tests.WildberriesTest" />
+        </classes>
+    </test>
+</suite>
