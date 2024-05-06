@@ -1,17 +1,12 @@
 package tests;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Owner;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
-import org.testng.annotations.Parameters;
-import org.testng.annotations.Test;
-import pages.BasketPage;
-import pages.ItemPage;
-import pages.ItemsPage;
-import pages.MainPage;
+import io.qameta.allure.*;
+import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
+import pages.*;
 
 public class WildberriesTest extends BaseTest{
+    private SoftAssert softAssert = new SoftAssert();
     @Test
     @Owner("Ковалевский Егор")
     @Severity(SeverityLevel.NORMAL)
@@ -23,29 +18,19 @@ public class WildberriesTest extends BaseTest{
         mainPage.selectCategories(mainCategory, category, subCategory);
 
         ItemsPage itemsPage = new ItemsPage();
-        itemsPage.filter(sortBy, minPrice, maxPrice);
+        softAssert.assertTrue(itemsPage.isSelectedCategoriesCorrect(mainCategory, category, subCategory),"chosen categories are not correct");
+        itemsPage.filter(sortBy);
+        softAssert.assertTrue(itemsPage.isFilterCorrect(sortBy),"filter is not correct");
         itemsPage.addItemsToBasket();
+
         itemsPage.goToBasket();
+        softAssert.assertTrue(itemsPage.areAllItemsAddedToBasket(),"not all items are added to basket");
 
         BasketPage basketPage = new BasketPage();
         basketPage.deleteItemFromBasket();
-        System.out.println();
-    }
+        softAssert.assertTrue(itemsPage.isItemRemovedFromBasket(),"item wasn't removed");
 
-    @Test
-    @Owner("Ковалевский Егор")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("")
-    @Parameters({"productName"})
-    public void second(String productName){
-        MainPage mainPage = new MainPage();
-        mainPage.findProduct(productName);
-
-        ItemsPage itemsPage = new ItemsPage();
-        itemsPage.goToItem();
-
-        ItemPage itemPage = new ItemPage();
-        itemPage.addItemToFavourites();
+        softAssert.assertAll();
         System.out.println();
     }
 }

@@ -5,15 +5,26 @@
     </listeners>
 
     <test name="test1">
-        <parameter name="mainCategory" value="Дом" />
-        <parameter name="category" value="Спальня" />
-        <parameter name="subCategory" value="Зеркала" />
+        <parameter name="mainCategory" value="Аксессуары" />
+        <parameter name="category" value="Бижутерия" />
+        <parameter name="subCategory" value="Броши" />
         <parameter name="sortBy" value="Убыванию цены" />
         <parameter name="minPrice" value="40" />
         <parameter name="maxPrice" value="150" />
         <parameter name="productName" value="Медведь" />
+        <parameter name="currencyName" value="Армянский драм" />
+        <parameter name="pickUpPointAddress" value="Минск, улица Бельского, 2" />
+        <parameter name="deliveryByCourierAddress" value="Минск, проспект Пушкина" />
+        <parameter name="house" value="10" />
+        <parameter name="flat" value="10" />
+        <parameter name="entrance" value="10" />
+        <parameter name="floor" value="10" />
+        <parameter name="oneMoreDeliveryByCourierAddress" value="Минск, проспект Независимости" />
         <classes>
             <class name="tests.WildberriesTest" />
+            <class name="tests.SecondTest" />
+            <class name="tests.ThirdTest"/>
         </classes>
     </test>
+
 </suite>

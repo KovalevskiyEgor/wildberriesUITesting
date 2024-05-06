@@ -1,24 +1,15 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import org.openqa.selenium.support.*;
+import org.openqa.selenium.support.ui.*;
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static utils.Actions.scrollToElement;
+import java.util.*;
+import static utils.Actions.*;
 
 public class ItemsPage extends BasePage{
     @FindBy(xpath = "//div[@class=\"chip chip__sort\"]")
@@ -29,31 +20,32 @@ public class ItemsPage extends BasePage{
     private WebElement basketButton;
     @FindBy(xpath = "//div[@class=\"product-card\"]")
     private WebElement itemCard;
-
+    @FindBy(xpath = "//li[@class=\"user-menu__item user-menu__item--heart-thin\"]")
+    private WebElement favouritesButton;
     private WebElement sortingMethod;
-    private WebElement header;
     private WebElement allBrandsButton;
     private WebElement searchInput;
     private List<WebElement> basketButtons;
-
     private WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    private JavascriptExecutor js = (JavascriptExecutor) driver;
     String currentUrl = driver.getCurrentUrl();
     public ItemsPage(){
         PageFactory.initElements(driver, this);
     }
-    public void filter(String sortBy,String minPrice, String maxPrice){
+    public void filter(String sortBy){
         sort(sortBy);
+        waitForElementLoaded();
         setBrand();
+    }
+    public void goToFavourites(){
+        favouritesButton.click();
     }
 
     public void addItemsToBasket(){
-        wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe(currentUrl)));
+        waitForElementLoaded();
         basketButtons = driver.findElements(By.xpath("//button[@data-tag=\"basketBtn\"]"));
         scrollToElement(basketButtons.get(0));
         basketButtons.get(0).click();
         basketButtons.get(1).click();
-        basketButtons.get(2).click();
     }
     public void goToBasket(){
         basketButton.click();
@@ -61,17 +53,22 @@ public class ItemsPage extends BasePage{
     public void goToItem(){
         itemCard.click();
     }
+    public boolean foundProductIsCorrect(String productName) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1")));
+        return driver.findElement(By.xpath("//h1")).getText().equals(productName);
+    }
     private void sort(String sortBy){
         sorting.click();
         sortingMethod = driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]",sortBy)));
         sortingMethod.click();
-        wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe(currentUrl)));
         currentUrl = driver.getCurrentUrl();
     }
 
     private void setBrand(){
-        wait.until(ExpectedConditions.attributeContains(By.xpath("//div[@class=\"chip chip__sort\"]"),"data-status","closed"));
+        wait.until(ExpectedConditions.visibilityOf(brand));
+        wait.until(ExpectedConditions.elementToBeClickable(brand));
         brand.click();
+
         allBrandsButton = driver.findElement(By.xpath("//div[@class=\"chip\" and @data-title=\"Бренд\"]//button[@class=\"filter__fold\"]"));
         allBrandsButton.click();
 
@@ -79,12 +76,22 @@ public class ItemsPage extends BasePage{
         ArrayList<String> brands = readXmlWithBrands();
         for(String brand:brands){
             searchInput.sendKeys(brand);
+            wait.until(ExpectedConditions.numberOfElementsToBeLessThan(By.xpath("//div[@class=\"chip-filter-box\"]//div[@class=\"filter__items-in\"]//div"),3));
+            wait.until(ExpectedConditions.attributeContains(searchInput,"value",brand));
+            waitForElementLoaded();
             WebElement brandToChoose = driver.findElement(By.xpath("//div[@class=\"chip-filter-box\"]//div[@class=\"filter__items-in\"]//div"));
             brandToChoose.click();
             searchInput.clear();
         }
-        header = driver.findElement(By.xpath("//h1"));
-        header.click();
+        driver.findElement(By.xpath("//button[@data-tag=\"fold\" and contains(text(),\"Свернуть\")]")).click();
+        driver.findElement(By.xpath("//div[contains(@class,\"chip\") and @data-title=\"Бренд\"]")).click();
+        wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//div[@class=\"chip-filter-box\"]//div[@class=\"filter__items-in\"]//div"),brands.size()));
+    }
+    public boolean isSelectedCategoriesCorrect(String mainCategory, String category, String subCategory) {
+        boolean isMainCategoryCorrect = mainCategory.equals(driver.findElement(By.xpath("(//span[@class=\"breadcrumb-item__link\"])[1]")).getText());
+        boolean isCategoryCorrect = category.equals(driver.findElement(By.xpath("(//span[@class=\"breadcrumb-item__link\"])[2]")).getText());
+        boolean isSubCategoryCorrect = subCategory.equals(driver.findElement(By.xpath("//h1")).getText());
+        return isSubCategoryCorrect&&isCategoryCorrect&&isMainCategoryCorrect;
     }
 
     private ArrayList<String> readXmlWithBrands() {
@@ -109,5 +116,31 @@ public class ItemsPage extends BasePage{
         } catch (Exception e) {
             return (new ArrayList<>(Collections.singleton("")));
         }
+    }
+
+    public boolean isFilterCorrect(String sortBy) {
+        sorting = driver.findElement(By.xpath("//div[@class=\"chip chip__sort\"]"));
+        sorting.click();
+        try{
+            driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]/ancestor::div[@class=\"filter__item is-active\"]",sortBy)));
+            brand = driver.findElement(By.xpath("//div[contains(@class,\"chip\") and @data-title=\"Бренд\"]"));
+            brand.click();
+            ArrayList<String> brands = readXmlWithBrands();
+            for(String brand: brands){
+                driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]/ancestor::div[@class=\"filter__item is-active\"]",brand)));
+            }
+        }catch (NoSuchElementException e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean areAllItemsAddedToBasket() {
+        System.out.println(driver.findElement(By.xpath("//span[@class=\"user-menu__badge\"]")).getText());
+        return driver.findElement(By.xpath("//span[@class=\"user-menu__badge\"]")).getText().equals("2");
+    }
+
+    public boolean isItemRemovedFromBasket() {
+        return driver.findElement(By.xpath("//span[@class=\"user-menu__badge\"]")).getText().equals("1");
     }
 }

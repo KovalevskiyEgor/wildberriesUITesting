@@ -1,21 +1,22 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v85.page.Page;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
+import static utils.Actions.waitForElementLoaded;
 
 public class MainPage extends BasePage{
     @FindBy(xpath = "//button[@data-tag=\"catalogBtn\"]")
     private WebElement catalogButton;
     @FindBy(xpath = "//input[@class=\"search-component-input\"]")
     private WebElement searchInput;
+    @FindBy(xpath = "//button[@data-tag=\"curBtn\"]")
+    private WebElement currencyButton;
+    @FindBy(xpath = "(//div[@data-tag=\"address\"])[1]")
+    private WebElement addressButton;
     private WebElement mainCategoryButton;
     private WebElement categoryButton;
     private WebElement subCategoryButton;
-
+    private WebElement currency;
     private static String CATEGORY_XPATH = "//span[text()=\"%s\"]/..";
 
     public MainPage(){
@@ -35,5 +36,14 @@ public class MainPage extends BasePage{
     public void findProduct(String productName){
         searchInput.sendKeys(productName);
         searchInput.sendKeys(Keys.ENTER);
+    }
+    public void changeCurrency(String currencyName){
+        currencyButton.click();
+        currency = driver.findElement(By.xpath(String.format("//span[@class=\"currency-item__name\" and contains(text(),\"%s\")]/..",currencyName)));
+        currency.click();
+    }
+    public void changeAddress(){
+        waitForElementLoaded();
+        addressButton.click();
     }
 }

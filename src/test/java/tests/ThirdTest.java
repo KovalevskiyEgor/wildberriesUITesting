@@ -1,0 +1,34 @@
+package tests;
+
+import io.qameta.allure.*;
+import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
+import pages.*;
+
+public class ThirdTest extends BaseTest{
+    private SoftAssert softAssert = new SoftAssert();
+    @Test
+    @Owner("Ковалевский Егор")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("")
+    @Parameters({"currencyName","pickUpPointAddress","deliveryByCourierAddress","house","flat","floor","entrance","oneMoreDeliveryByCourierAddress"})
+    public void test(String currencyName,String pickUpPointAddress,String deliveryByCourierAddress,
+                     String house,String flat, String floor, String entrance,
+                     String oneMoreDeliveryByCourierAddress){
+        MainPage mainPage = new MainPage();
+        mainPage.changeCurrency(currencyName);
+        mainPage.changeAddress();
+
+        DeliveryMethodPage deliveryMethodPage = new DeliveryMethodPage();
+        deliveryMethodPage.addPickUpPoint(pickUpPointAddress);
+        mainPage.changeAddress();
+        deliveryMethodPage.addCourierDeliveryAddress(deliveryByCourierAddress, house, flat, floor, entrance);
+        mainPage.changeAddress();
+        deliveryMethodPage.addCourierDeliveryAddress(oneMoreDeliveryByCourierAddress, house, flat, floor, entrance);
+
+        mainPage.changeAddress();
+        softAssert.assertTrue(deliveryMethodPage.areCourierDeliveryAddressesCorrect(oneMoreDeliveryByCourierAddress, deliveryByCourierAddress, house, flat, floor, entrance));
+
+        softAssert.assertAll();
+    }
+}

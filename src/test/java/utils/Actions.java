@@ -1,9 +1,7 @@
 package utils;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import pages.BasePage;
-import tests.BaseTest;
 
 public class Actions extends BasePage {
     public static JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -13,5 +11,16 @@ public class Actions extends BasePage {
     public static void scrollToElementAndClick(WebElement element){
         js.executeScript("arguments[0].scrollIntoView(true);", element);
         js.executeScript("arguments[0].click();", element);
+    }
+    public static void clickOnElement(WebElement element){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", element);
+    }
+    public static void waitForElementLoaded() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
