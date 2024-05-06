@@ -2,6 +2,8 @@ package pages;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.*;
+import utils.Actions;
+
 import static utils.Actions.waitForElementLoaded;
 
 public class ItemPage extends BasePage{
@@ -16,7 +18,8 @@ public class ItemPage extends BasePage{
     }
     public void addItemToFavourites(){
         waitForElementLoaded();
-        likeButton.click();
+        Actions.clickOnElement(likeButton);
+        //likeButton.click();
         propertyReader.setValue("item.id",itemId.getText());
     }
     public void addToBasket(){
