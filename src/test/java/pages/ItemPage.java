@@ -1,5 +1,6 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.*;
 import utils.Actions;
@@ -18,8 +19,12 @@ public class ItemPage extends BasePage{
     }
     public void addItemToFavourites(){
         waitForElementLoaded();
-        Actions.clickOnElement(likeButton);//
-        //likeButton.click();
+        Actions.clickOnElement(likeButton);
+        try {
+            driver.findElement(By.xpath("//button[@class=\"product__favourites is-favourites\"]"));
+        }catch (Exception e){
+            Actions.clickOnElement(likeButton);
+        }
         propertyReader.setValue("item.id",itemId.getText());
     }
     public void addToBasket(){
