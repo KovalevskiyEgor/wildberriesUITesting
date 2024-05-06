@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -30,15 +31,18 @@ public class ItemsPage extends BasePage{
     public ItemsPage(){
         PageFactory.initElements(driver, this);
     }
+
     public void filter(String sortBy){
         sort(sortBy);
         waitForElementLoaded();
         setBrand();
     }
+    @Step("going to favourites page")
     public void goToFavourites(){
         favouritesButton.click();
     }
 
+    @Step("adding item to basket")
     public void addItemsToBasket(){
         waitForElementLoaded();
         basketButtons = driver.findElements(By.xpath("//button[@data-tag=\"basketBtn\"]"));
@@ -48,12 +52,15 @@ public class ItemsPage extends BasePage{
         basketButtons.get(1).click();
         wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//div[@class=\"quantity\"]"),2));
     }
+    @Step("going to basket")
     public void goToBasket(){
         basketButton.click();
     }
+    @Step("going to items page")
     public void goToItem(){
         itemCard.click();
     }
+    @Step("checking if found product is correct")
     public boolean foundProductIsCorrect(String productName) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1")));
         return driver.findElement(By.xpath("//h1")).getText().equals(productName);
@@ -62,8 +69,6 @@ public class ItemsPage extends BasePage{
         sorting.click();
         sortingMethod = driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]",sortBy)));
         sortingMethod.click();
-        //sorting = driver.findElement(By.xpath("//div[@class=\"chip chip__sort\"]"));
-        //wait.until(ExpectedConditions.attributeToBe(sorting,"data-status","closed"));
     }
 
     private void setBrand(){
@@ -88,8 +93,8 @@ public class ItemsPage extends BasePage{
             wait.until(ExpectedConditions.not(ExpectedConditions.attributeToBeNotEmpty(searchInput,"value")));
         }
         driver.findElement(By.xpath("//button[@data-tag=\"fold\" and contains(text(),\"Свернуть\")]")).click();
-        //wait.until(ExpectedConditions.attributeToBe(By.xpath("//div[@data-title=\"Бренд\"]"),"data-status","closed"));
     }
+    @Step("checking if selected categories correct")
     public boolean isSelectedCategoriesCorrect(String mainCategory, String category, String subCategory) {
         boolean isMainCategoryCorrect = mainCategory.equals(driver.findElement(By.xpath("(//span[@class=\"breadcrumb-item__link\"])[1]")).getText());
         boolean isCategoryCorrect = category.equals(driver.findElement(By.xpath("(//span[@class=\"breadcrumb-item__link\"])[2]")).getText());
@@ -120,7 +125,7 @@ public class ItemsPage extends BasePage{
             return (new ArrayList<>(Collections.singleton("")));
         }
     }
-
+    @Step("checking if filter is correct")
     public boolean isFilterCorrect(String sortBy) {
         waitForElementLoaded();
         sorting = driver.findElement(By.xpath("//div[@class=\"chip chip__sort\"]"));
@@ -138,12 +143,12 @@ public class ItemsPage extends BasePage{
         }
         return true;
     }
-
+    @Step("checking if all items added to basket")
     public boolean areAllItemsAddedToBasket() {
         System.out.println(driver.findElement(By.xpath("//span[@class=\"user-menu__badge\"]")).getText());
         return driver.findElement(By.xpath("//span[@class=\"user-menu__badge\"]")).getText().equals("2");
     }
-
+    @Step("checking if item removed from basket")
     public boolean isItemRemovedFromBasket() {
         return driver.findElement(By.xpath("//span[@class=\"user-menu__badge\"]")).getText().equals("1");
     }

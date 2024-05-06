@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
@@ -26,6 +27,7 @@ public class DeliveryMethodPage extends BasePage{
         PageFactory.initElements(driver, this);
     }
 
+    @Step("adding pick up point")
     public void addPickUpPoint(String pickUpPointAddress){
         pickUpPointAddressSearchField = driver.findElement(By.xpath("//input[@data-tag=\"address\"]"));
         for(char c:pickUpPointAddress.toCharArray()){
@@ -42,6 +44,7 @@ public class DeliveryMethodPage extends BasePage{
         confirmPickUpPoint = driver.findElement(By.xpath("//button[@class=\"btn delivery-footer__btn--confirm \"]"));
         confirmPickUpPoint.click();
     }
+    @Step("adding courier delivery address")
     public void addCourierDeliveryAddress(String deliveryByCourierAddress, String house, String flat, String entrance, String floor){
         deliveryByCourierButton.click();
         addAddressButton = driver.findElement(By.xpath("//button[@data-tag=\"pick\"]"));
@@ -68,6 +71,7 @@ public class DeliveryMethodPage extends BasePage{
         confirmDeliveryByCourierAddress.click();
     }
 
+    @Step("checking if courier delivery addresses correct")
     public boolean areCourierDeliveryAddressesCorrect(String oneMoreDeliveryByCourierAddress, String deliveryByCourierAddress, String house, String flat, String floor, String entrance) {
         String address = "%s, дом %s, квартира %s, подъезд %s, этаж %s";
         String firstAddress = String.format(address, oneMoreDeliveryByCourierAddress, house, flat, floor, entrance);

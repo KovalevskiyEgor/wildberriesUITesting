@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.*;
@@ -17,6 +18,7 @@ public class ItemPage extends BasePage{
     public ItemPage(){
         PageFactory.initElements(driver, this);
     }
+    @Step("adding item to favourites")
     public void addItemToFavourites(){
         waitForElementLoaded();
         Actions.clickOnElement(likeButton);
@@ -27,10 +29,12 @@ public class ItemPage extends BasePage{
         }
         propertyReader.setValue("item.id",itemId.getText());
     }
+    @Step("adding item to basket")
     public void addToBasket(){
         basketButton.click();
     }
 
+    @Step("checking if item id is correct")
     public boolean isIdCorrect() {
         return itemId.getText().equals(propertyReader.getProperty("item.id"));
     }

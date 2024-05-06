@@ -17,6 +17,7 @@ public class ThirdTest extends BaseTest{
                      String oneMoreDeliveryByCourierAddress){
         MainPage mainPage = new MainPage();
         mainPage.changeCurrency(currencyName);
+        softAssert.assertTrue(mainPage.isCurrencyCorrectlySelected(currencyName),"currency is not correct");
         mainPage.changeAddress();
 
         DeliveryMethodPage deliveryMethodPage = new DeliveryMethodPage();
