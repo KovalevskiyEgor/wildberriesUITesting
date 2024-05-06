@@ -18,7 +18,7 @@ public class ItemPage extends BasePage{
     }
     public void addItemToFavourites(){
         waitForElementLoaded();
-        Actions.clickOnElement(likeButton);
+        Actions.clickOnElement(likeButton);//
         //likeButton.click();
         propertyReader.setValue("item.id",itemId.getText());
     }
