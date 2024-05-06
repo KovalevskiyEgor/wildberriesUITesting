@@ -27,7 +27,6 @@ public class ItemsPage extends BasePage{
     private WebElement searchInput;
     private List<WebElement> basketButtons;
     private WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    String currentUrl = driver.getCurrentUrl();
     public ItemsPage(){
         PageFactory.initElements(driver, this);
     }
@@ -45,7 +44,9 @@ public class ItemsPage extends BasePage{
         basketButtons = driver.findElements(By.xpath("//button[@data-tag=\"basketBtn\"]"));
         scrollToElement(basketButtons.get(0));
         basketButtons.get(0).click();
+        wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//div[@class=\"quantity\"]"),1));
         basketButtons.get(1).click();
+        wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//div[@class=\"quantity\"]"),2));
     }
     public void goToBasket(){
         basketButton.click();
@@ -61,12 +62,14 @@ public class ItemsPage extends BasePage{
         sorting.click();
         sortingMethod = driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]",sortBy)));
         sortingMethod.click();
-        currentUrl = driver.getCurrentUrl();
+        //sorting = driver.findElement(By.xpath("//div[@class=\"chip chip__sort\"]"));
+        //wait.until(ExpectedConditions.attributeToBe(sorting,"data-status","closed"));
     }
 
     private void setBrand(){
         wait.until(ExpectedConditions.visibilityOf(brand));
         wait.until(ExpectedConditions.elementToBeClickable(brand));
+        brand = driver.findElement(By.xpath("//div[@data-title=\"Бренд\"]"));
         brand.click();
 
         allBrandsButton = driver.findElement(By.xpath("//div[@class=\"chip\" and @data-title=\"Бренд\"]//button[@class=\"filter__fold\"]"));
@@ -82,10 +85,10 @@ public class ItemsPage extends BasePage{
             WebElement brandToChoose = driver.findElement(By.xpath("//div[@class=\"chip-filter-box\"]//div[@class=\"filter__items-in\"]//div"));
             brandToChoose.click();
             searchInput.clear();
+            wait.until(ExpectedConditions.not(ExpectedConditions.attributeToBeNotEmpty(searchInput,"value")));
         }
         driver.findElement(By.xpath("//button[@data-tag=\"fold\" and contains(text(),\"Свернуть\")]")).click();
-        driver.findElement(By.xpath("//div[contains(@class,\"chip\") and @data-title=\"Бренд\"]")).click();
-        wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//div[@class=\"chip-filter-box\"]//div[@class=\"filter__items-in\"]//div"),brands.size()));
+        //wait.until(ExpectedConditions.attributeToBe(By.xpath("//div[@data-title=\"Бренд\"]"),"data-status","closed"));
     }
     public boolean isSelectedCategoriesCorrect(String mainCategory, String category, String subCategory) {
         boolean isMainCategoryCorrect = mainCategory.equals(driver.findElement(By.xpath("(//span[@class=\"breadcrumb-item__link\"])[1]")).getText());
@@ -119,6 +122,7 @@ public class ItemsPage extends BasePage{
     }
 
     public boolean isFilterCorrect(String sortBy) {
+        waitForElementLoaded();
         sorting = driver.findElement(By.xpath("//div[@class=\"chip chip__sort\"]"));
         sorting.click();
         try{

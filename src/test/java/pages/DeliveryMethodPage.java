@@ -28,12 +28,14 @@ public class DeliveryMethodPage extends BasePage{
 
     public void addPickUpPoint(String pickUpPointAddress){
         pickUpPointAddressSearchField = driver.findElement(By.xpath("//input[@data-tag=\"address\"]"));
-        pickUpPointAddressSearchField.sendKeys(pickUpPointAddress);
+        for(char c:pickUpPointAddress.toCharArray()){
+            pickUpPointAddressSearchField.sendKeys(String.valueOf(c));
+        }
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format("//span[@class=\"input-autocomplete-item__address\" and contains(text(),\"%s\")]",pickUpPointAddress))));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//span[@class=\"input-autocomplete-item__address\" and contains(text(),\"%s\")]",pickUpPointAddress))));
+        waitForElementLoaded();
         pickUpPointStreet = driver.findElement((By.xpath("(//li[@class=\"input-autocomplete-item\"])[1]")));
         pickUpPointStreet.click();
-        waitForElementLoaded();
         pickUpPoint = driver.findElement(By.xpath("(//div[@class=\"pvz-item-delivery__content\"])[1]"));
         pickUpPoint.click();
 
@@ -45,7 +47,9 @@ public class DeliveryMethodPage extends BasePage{
         addAddressButton = driver.findElement(By.xpath("//button[@data-tag=\"pick\"]"));
         addAddressButton.click();
         deliveryByCourierAddressSearchField = driver.findElement(By.xpath("//textarea[@data-tag=\"address\"]"));
-        deliveryByCourierAddressSearchField.sendKeys(deliveryByCourierAddress);
+        for(char c:deliveryByCourierAddress.toCharArray()){
+            deliveryByCourierAddressSearchField.sendKeys(String.valueOf(c));
+        }
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(String.format("//span[@class=\"input-autocomplete-item__address\" and contains(text(),\"%s\")]",deliveryByCourierAddress))));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//span[@class=\"input-autocomplete-item__address\" and contains(text(),\"%s\")]",deliveryByCourierAddress))));
         waitForElementLoaded();

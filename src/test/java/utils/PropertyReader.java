@@ -1,7 +1,6 @@
 package utils;
 
 import lombok.extern.java.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -9,7 +8,6 @@ import java.util.Properties;
 @Log
 public class PropertyReader {
     private static Properties properties;
-
     public PropertyReader(String fileName) {
         properties = appendFromResource(fileName);
     }
