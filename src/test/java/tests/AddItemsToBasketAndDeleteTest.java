@@ -5,14 +5,14 @@ import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import pages.*;
 
-public class WildberriesTest extends BaseTest{
+public class AddItemsToBasketAndDeleteTest extends BaseTest{
     private SoftAssert softAssert = new SoftAssert();
     @Test
     @Owner("Ковалевский Егор")
     @Severity(SeverityLevel.NORMAL)
-    @Description("")
+    @Description("adding items to basket and then delete them")
     @Parameters({"mainCategory","category","subCategory","sortBy","minPrice","maxPrice"})
-    public void first(String mainCategory, String category, String subCategory,String sortBy,String minPrice,String maxPrice){
+    public void addItemsToBasketAndDeleteTest(String mainCategory, String category, String subCategory,String sortBy,String minPrice,String maxPrice){
         MainPage mainPage = new MainPage();
         mainPage.clickOnCatalogButton();
         mainPage.selectCategories(mainCategory, category, subCategory);
@@ -31,6 +31,5 @@ public class WildberriesTest extends BaseTest{
         softAssert.assertTrue(itemsPage.isItemRemovedFromBasket(),"item wasn't removed");
 
         softAssert.assertAll();
-        System.out.println();
     }
 }

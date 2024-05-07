@@ -5,14 +5,14 @@ import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import pages.*;
 
-public class ThirdTest extends BaseTest{
+public class ChangeAddressTest extends BaseTest{
     private SoftAssert softAssert = new SoftAssert();
     @Test
     @Owner("Ковалевский Егор")
     @Severity(SeverityLevel.NORMAL)
-    @Description("")
+    @Description("changing pick up and courier delivery address")
     @Parameters({"currencyName","pickUpPointAddress","deliveryByCourierAddress","house","flat","floor","entrance","oneMoreDeliveryByCourierAddress"})
-    public void test(String currencyName,String pickUpPointAddress,String deliveryByCourierAddress,
+    public void changeAddressTest(String currencyName,String pickUpPointAddress,String deliveryByCourierAddress,
                      String house,String flat, String floor, String entrance,
                      String oneMoreDeliveryByCourierAddress){
         MainPage mainPage = new MainPage();

@@ -21,9 +21,9 @@
         <parameter name="floor" value="10" />
         <parameter name="oneMoreDeliveryByCourierAddress" value="Минск, проспект Независимости" />
         <classes>
-            <class name="tests.WildberriesTest" />
-            <class name="tests.SecondTest" />
-            <class name="tests.ThirdTest"/>
+            <class name="tests.AddItemsToBasketAndDeleteTest" />
+            <class name="tests.AddItemToFavouritesAndBasketTest" />
+            <class name="tests.ChangeAddressTest"/>
         </classes>
     </test>
 

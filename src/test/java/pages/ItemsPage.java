@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.*;
 import org.openqa.selenium.support.ui.*;
 import org.w3c.dom.*;
+import utils.FileReader;
+
 import javax.xml.parsers.*;
 import java.time.Duration;
 import java.util.*;
@@ -28,6 +30,7 @@ public class ItemsPage extends BasePage{
     private WebElement searchInput;
     private List<WebElement> basketButtons;
     private WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    private FileReader fileReader = new FileReader();
     public ItemsPage(){
         PageFactory.initElements(driver, this);
     }
@@ -65,12 +68,13 @@ public class ItemsPage extends BasePage{
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1")));
         return driver.findElement(By.xpath("//h1")).getText().equals(productName);
     }
+    @Step("sorting")
     private void sort(String sortBy){
         sorting.click();
         sortingMethod = driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]",sortBy)));
         sortingMethod.click();
     }
-
+    @Step("setting brands")
     private void setBrand(){
         wait.until(ExpectedConditions.visibilityOf(brand));
         wait.until(ExpectedConditions.elementToBeClickable(brand));
@@ -81,7 +85,7 @@ public class ItemsPage extends BasePage{
         allBrandsButton.click();
 
         searchInput = driver.findElement(By.xpath("//div[@class=\"chip-filter-container\"]//input[@data-text=\"strSearch\"]"));
-        ArrayList<String> brands = readXmlWithBrands();
+        ArrayList<String> brands = fileReader.readXmlWithBrands();
         for(String brand:brands){
             searchInput.sendKeys(brand);
             wait.until(ExpectedConditions.numberOfElementsToBeLessThan(By.xpath("//div[@class=\"chip-filter-box\"]//div[@class=\"filter__items-in\"]//div"),3));
@@ -102,29 +106,6 @@ public class ItemsPage extends BasePage{
         return isSubCategoryCorrect&&isCategoryCorrect&&isMainCategoryCorrect;
     }
 
-    private ArrayList<String> readXmlWithBrands() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            Document document = builder.parse("src/test/resources/brands.xml");
-
-            Element filtersElement = document.getDocumentElement();
-
-            NodeList manufacturerNodes = filtersElement.getElementsByTagName("brand");
-
-            ArrayList<String> brands = new ArrayList<>();
-
-            for (int i = 0; i < manufacturerNodes.getLength(); i++) {
-                Element manufacturerElement = (Element) manufacturerNodes.item(i);
-                String brand = manufacturerElement.getTextContent();
-                brands.add(brand);
-            }
-            return brands;
-        } catch (Exception e) {
-            return (new ArrayList<>(Collections.singleton("")));
-        }
-    }
     @Step("checking if filter is correct")
     public boolean isFilterCorrect(String sortBy) {
         waitForElementLoaded();
@@ -134,7 +115,7 @@ public class ItemsPage extends BasePage{
             driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]/ancestor::div[@class=\"filter__item is-active\"]",sortBy)));
             brand = driver.findElement(By.xpath("//div[contains(@class,\"chip\") and @data-title=\"Бренд\"]"));
             brand.click();
-            ArrayList<String> brands = readXmlWithBrands();
+            ArrayList<String> brands = fileReader.readXmlWithBrands();
             for(String brand: brands){
                 driver.findElement(By.xpath(String.format("//span[@class=\"filter__item-in\" and contains(text(),\"%s\")]/ancestor::div[@class=\"filter__item is-active\"]",brand)));
             }

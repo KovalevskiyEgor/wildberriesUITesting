@@ -6,14 +6,14 @@ import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 import pages.*;
 
-public class SecondTest extends BaseTest{
+public class AddItemToFavouritesAndBasketTest extends BaseTest{
     private SoftAssert softAssert = new SoftAssert();
     @Test
     @Owner("Ковалевский Егор")
     @Severity(SeverityLevel.NORMAL)
-    @Description("")
+    @Description("adding item to favourites and basket")
     @Parameters({"productName"})
-    public void second(String productName){
+    public void addItemToFavouritesAndBasketTest(String productName){
         MainPage mainPage = new MainPage();
         mainPage.findProduct(productName);
 
